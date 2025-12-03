@@ -1,96 +1,99 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="stylesheet.css">
-<a href="index.html">← Back to Home</a>
 <html>
 <head>
-  <title>Basic Bust-a-Move / Puzzle Bobble / Bubble Shooter HTML Game</title>
-  <meta charset="UTF-8">
-  <style>
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Burst</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='70' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial, sans-serif'>G</text></svg>" type="image/svg+xml">
+    
+    <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
 
-  body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    text-align: center;
-  }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      text-align: center;
+    }
 
-  a {
-    display: inline-block;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    background-color: #fff;
-    color: #000;
-    text-decoration: none;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
+    a {
+      display: inline-block;
+      padding: 10px 15px;
+      margin-bottom: 20px;
+      background-color: #fff;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
 
-  h1 {
-    color: #fff;
-    margin-bottom: 20px;
-  }
+    h1 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
 
-  a:hover {
-    background-color: #f0f0f0;
-  }
+    a:hover {
+      background-color: #f0f0f0;
+    }
 
-  canvas {
-    background-color: darkgrey;
-    margin-top: 20px;
-  }
+    canvas {
+      background-color: darkgrey;
+      margin-top: 20px;
+    }
 
-  .instructions {
-    color: #fff;
-    margin-top: 20px;
-    font-size: 14px;
-  }
-  
-  button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: 'Arial', sans-serif;
-  }
+    .instructions {
+      color: #fff;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: 'Arial', sans-serif;
+    }
 
-  button:hover {
-    background-color: #f0f0f0;
-  }
-  .hud {
-    margin-bottom: 6px;
-  }
-  #scoreDisplay {
-    color: darkblue;
-    font-size: 18px;
-    font-weight: 600;
-  }
-  #highDisplay {
-    color: #4a90e2;
-    font-size: 18px;
-    font-weight: 600;
-    margin-left: 12px;
-  }
-  </style>
+    button:hover {
+      background-color: #f0f0f0;
+    }
+    .hud {
+      margin-bottom: 6px;
+    }
+    #scoreDisplay {
+      color: darkblue;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    #highDisplay {
+      color: #4a90e2;
+      font-size: 18px;
+      font-weight: 600;
+      margin-left: 12px;
+    }
+    </style>
+</head>
+<body>
+<a href="index.html">← Back to Home</a>
 <h1>Welcome to Bubble Shooter!</h1>
 <div class="instructions">
   Use the <strong>Left</strong> and <strong>Right Arrow Keys</strong> to aim.<br>
   Press <strong>Space</strong> to shoot the current bubble.
 </div>
-</head>
-<body>
 <div class="hud">
   <span id="scoreDisplay">Score: 0</span>
   <span id="highDisplay" style="margin-left:12px">High: 0</span>

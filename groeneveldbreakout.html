@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="stylesheet.css">
-<a href="index.html">← Back to Home</a>
 <html>
 <head>
   <title>Basic Breakout HTML Game</title>
   <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='70' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial, sans-serif'>G</text></svg>" type="image/svg+xml">
   <style>
   html, body {
     height: 100%;
@@ -26,18 +25,18 @@
   a {
     display: inline-block;
     padding: 10px 15px;
-        margin-bottom: 20px;
-        background-color: #fff;
-        color: #000;
-        text-decoration: none;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-    
-    h1 {
-        color: #fff;
-        margin-bottom: 20px;
-    }
+    margin-bottom: 20px;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  h1 {
+    color: #fff;
+    margin-bottom: 20px;
+  }
 
   a:hover {
     background-color: #f0f0f0;
@@ -54,13 +53,14 @@
     font-size: 14px;
   }
   </style>
+</head>
+<body>
+<a href="index.html">← Back to Home</a>
 <h1>Welcome to Breakout Game!</h1>
 <div class="instructions">
   Use the <strong>Spacebar</strong> to start the game or serve a new ball.<br>
   Use the <strong>Left</strong> and <strong>Right Arrow Keys</strong> to move the paddle.
 </div>
-</head>
-<body>
 <canvas width="400" height="500" id="game"></canvas>
 <script>
 const canvas = document.getElementById('game');

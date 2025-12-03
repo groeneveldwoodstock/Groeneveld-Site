@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="stylesheet.css">
-<a href="index.html">← Back to Home</a>
 <html>
 <head>
   <title>Basic Block Dude HTML Game</title>
   <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='70' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial, sans-serif'>G</text></svg>" type="image/svg+xml">
   <style>
   html, body {
     height: 100%;
@@ -70,13 +69,14 @@
     background-color: #f0f0f0;
   }
   </style>
+</head>
+<body>
+<a href="index.html">← Back to Home</a>
 <h1>Welcome to Block Dude Game!</h1>
 <div class="instructions">
   Use the <strong>Left</strong> and <strong>Right Arrow Keys</strong> to move.<br>
   Use the <strong>Down Arrow Key</strong> to pick up or drop blocks.
 </div>
-</head>
-<body>
 <canvas width="384" height="256" id="game"></canvas>
 <button id="restartBtn">Restart Game</button>
 <script>
