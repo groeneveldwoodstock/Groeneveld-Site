@@ -10,10 +10,10 @@ Homepage Screenshot
 <img src="https://github.com/groeneveldwoodstock/Groeneveld-Site/blob/main/homepage.png" alt="Screen Shot" style="width:200px;">
 <hr>
 Breakout Screenshot
-<img src="https://github.com/groeneveldwoodstock/Basic-Calculator/blob/main/breakout.png" alt="Screen Shot" style="width:200px;">
+<img src="https://github.com/groeneveldwoodstock/Groeneveld-Site/blob/main/breakout.png" alt="Screen Shot" style="width:200px;">
 <hr>
 Bubble Burst Screenshot
-<img src="https://github.com/groeneveldwoodstock/Basic-Calculator/blob/main/bubbleburst.png" alt="Screen Shot" style="width:200px;">
+<img src="https://github.com/groeneveldwoodstock/Groeneveld-Site/blob/main/bubbleburst.png" alt="Screen Shot" style="width:200px;">
 <hr>
 Block Dude Screenshot
-<img src="https://github.com/groeneveldwoodstock/Basic-Calculator/blob/main/blockdude.png" alt="Screen Shot" style="width:200px;">
+<img src="https://github.com/groeneveldwoodstock/Groeneveld-Site/blob/main/blockdude.png" alt="Screen Shot" style="width:200px;">
