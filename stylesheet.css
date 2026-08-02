@@ -6,6 +6,15 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            margin: 0;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(280px, 1fr));
+            gap: 24px;
+            width: min(1200px, 100%);
+            align-items: start;
         }
 
         .container {
@@ -14,7 +23,10 @@
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            margin: 0;
         }
 
         h1 {
@@ -85,16 +97,18 @@
         color: #764ba2;
     }
     .info-box2 {
-        margin: 40px auto 0 auto;
-        max-width: 480px;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: #fff;
         border-radius: 16px;
         box-shadow: 0 2px 16px rgba(60,60,120,0.10);
-        padding: 28px 24px 20px 24px;
+        padding: 40px 40px 20px 40px;
         font-size: 16px;
         text-align: center;
         border: 1px solid #4a90e2;
+        box-sizing: border-box;
     }
     .info-box2 .github-btn {
         display: inline-block;
@@ -114,4 +128,10 @@
     .info-box2 .github-btn:hover {
         background: #e6f0ff;
         color: #764ba2;
+    }
+
+    @media (max-width: 900px) {
+        .page-layout {
+            grid-template-columns: 1fr;
+        }
     }
