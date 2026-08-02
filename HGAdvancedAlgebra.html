@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H/G Advanced Algebra</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1f2937;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            flex-shrink: 0;
+            padding: 24px 24px 18px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.25);
+        }
+
+        .back-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 800;
+            color: #4c51bf;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .document-shell {
+            flex: 1;
+            min-height: 0;
+            margin: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            background: white;
+        }
+
+        .document-shell iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            background: white;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 700px) {
+            .page-header {
+                padding: 16px 16px 12px;
+            }
+
+            .document-shell {
+                margin: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="page-header">
+        <a href="index.html" class="back-button">Groeneveld Home</a>
+        <h1>H/G Advanced Algebra</h1>
+    </header>
+
+    <div class="document-shell">
+        <iframe
+            src="https://docs.google.com/document/d/e/2PACX-1vT72ThXE9t7h57QjXG9Ek1xdva_muCajzluE_fla35FoAQ4_DeaKAJUuQLEPcLFBDs6xzC-K-W3KpsU/pub?embedded=true"
+            title="H/G Advanced Algebra"
+            loading="lazy"
+        ></iframe>
+    </div>
+</body>
+</html>
