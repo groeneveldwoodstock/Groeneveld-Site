@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tetris Game</title>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='70' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial, sans-serif'>G</text></svg>" type="image/svg+xml">
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 70px 20px 20px;
+    text-align: center;
+  }
+
+  a {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+
+  h1 {
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  a:hover {
+    background-color: #f0f0f0;
+  }
+
+  canvas {
+    background-color: darkgrey;
+    margin-top: 20px;
+    border: 1px solid #d3d3d3;
+  }
+
+  #tetris {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background-color: #f8f8f8;
+    border: 4px solid #000;
+    border-radius: 10px;
+    padding: 12px;
+    color: #000;
+  }
+
+  #canvas {
+    background-color: #fff;
+    border: 2px solid #333;
+    box-shadow: 6px 6px 6px #999;
+    margin-top: 0;
+  }
+
+  #menu {
+    min-width: 100px;
+    text-align: center;
+  }
+
+  #menu p {
+    margin: 12px 0;
+  }
+
+  #menu a {
+    color: #000;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-decoration: underline;
+  }
+
+  #upcoming {
+    display: block;
+    margin: 0 auto;
+    background-color: #e0e0e0;
+    border: 1px solid #333;
+  }
+
+  #score {
+    color: red;
+    font-weight: bold;
+  }
+
+  #rows {
+    color: blue;
+    font-weight: bold;
+  }
+
+  .instructions {
+    color: #fff;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  </style>
+</head>
+<body>
+<a href="index.html">&larr; Back to Home</a>
+<h1>Welcome to Tetris Game!</h1>
+<div class="instructions">
+  Use the <strong>Arrow Keys</strong> to move the pieces.<br>
+  Press <strong>Space</strong> to start and <strong>Esc</strong> to pause.
+</div>
+<div id="tetris">
+  <div id="menu">
+    <p id="start"><a href="javascript:play();">Press Space to Play.</a></p>
+    <p><canvas id="upcoming" width="80" height="80"></canvas></p>
+    <p>score <span id="score">00000</span></p>
+    <p>rows <span id="rows">0</span></p>
+  </div>
+  <canvas id="canvas" width="200" height="400"></canvas>
+</div>
+<script>
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const upcoming = document.getElementById('upcoming');
+const upcomingContext = upcoming.getContext('2d');
+const columns = 10;
+const rowsCount = 20;
+const blockSize = 20;
+const previewSize = 16;
+const pieces = [
+  { color: 'cyan', blocks: [[1, 1, 1, 1]] },
+  { color: 'blue', blocks: [[1, 0, 0], [1, 1, 1]] },
+  { color: 'orange', blocks: [[0, 0, 1], [1, 1, 1]] },
+  { color: 'yellow', blocks: [[1, 1], [1, 1]] },
+  { color: 'green', blocks: [[0, 1, 1], [1, 1, 0]] },
+  { color: 'purple', blocks: [[0, 1, 0], [1, 1, 1]] },
+  { color: 'red', blocks: [[1, 1, 0], [0, 1, 1]] }
+];
+
+let board;
+let current;
+let next;
+let score = 0;
+let completedRows = 0;
+let playing = false;
+let lastDrop = 0;
+let dropDelay = 600;
+
+function rotate(piece) {
+  return piece[0].map((_, column) => piece.map(row => row[column]).reverse());
+}
+
+function newPiece() {
+  const source = pieces[Math.floor(Math.random() * pieces.length)];
+  return { color: source.color, blocks: source.blocks.map(row => row.slice()), x: 3, y: 0 };
+}
+
+function reset() {
+  board = Array.from({ length: rowsCount }, () => Array(columns).fill(null));
+  score = 0;
+  completedRows = 0;
+  dropDelay = 600;
+  current = newPiece();
+  next = newPiece();
+  updateScore();
+  updateRows();
+  draw();
+}
+
+function collides(piece, offsetX = 0, offsetY = 0, blocks = piece.blocks) {
+  return blocks.some((row, y) => row.some((filled, x) => filled && (
+    piece.x + x + offsetX < 0 || piece.x + x + offsetX >= columns ||
+    piece.y + y + offsetY >= rowsCount ||
+    (piece.y + y + offsetY >= 0 && board[piece.y + y + offsetY][piece.x + x + offsetX])
+  )));
+}
+
+function mergePiece() {
+  current.blocks.forEach((row, y) => row.forEach((filled, x) => {
+    if (filled && current.y + y >= 0) board[current.y + y][current.x + x] = current.color;
+  }));
+}
+
+function clearLines() {
+  const remaining = board.filter(row => row.some(cell => !cell));
+  const cleared = rowsCount - remaining.length;
+  while (remaining.length < rowsCount) remaining.unshift(Array(columns).fill(null));
+  board = remaining;
+  if (cleared) {
+    completedRows += cleared;
+    score += [0, 100, 300, 500, 800][cleared];
+    dropDelay = Math.max(100, 600 - completedRows * 20);
+    updateScore();
+    updateRows();
+  }
+}
+
+function drop() {
+  if (!playing) return;
+  if (!collides(current, 0, 1)) {
+    current.y++;
+  } else {
+    mergePiece();
+    clearLines();
+    current = next;
+    next = newPiece();
+    if (collides(current)) lose();
+  }
+  draw();
+}
+
+function move(direction) {
+  if (!playing || collides(current, direction, 0)) return;
+  current.x += direction;
+  draw();
+}
+
+function rotateCurrent() {
+  if (!playing) return;
+  const rotated = rotate(current.blocks);
+  if (!collides(current, 0, 0, rotated)) {
+    current.blocks = rotated;
+    draw();
+  }
+}
+
+function drawBlock(target, x, y, size, color) {
+  target.fillStyle = color;
+  target.fillRect(x * size, y * size, size, size);
+  target.strokeStyle = '#333';
+  target.strokeRect(x * size, y * size, size, size);
+}
+
+function draw() {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  board.forEach((row, y) => row.forEach((color, x) => color && drawBlock(context, x, y, blockSize, color)));
+  current.blocks.forEach((row, y) => row.forEach((filled, x) => {
+    if (filled && current.y + y >= 0) drawBlock(context, current.x + x, current.y + y, blockSize, current.color);
+  }));
+  upcomingContext.clearRect(0, 0, upcoming.width, upcoming.height);
+  next.blocks.forEach((row, y) => row.forEach((filled, x) => filled && drawBlock(upcomingContext, x + 1, y + 1, previewSize, next.color)));
+}
+
+function updateScore() { document.getElementById('score').textContent = String(score).padStart(5, '0'); }
+function updateRows() { document.getElementById('rows').textContent = completedRows; }
+function play() { reset(); playing = true; document.getElementById('start').style.visibility = 'hidden'; }
+function lose() { playing = false; document.getElementById('start').style.visibility = 'visible'; }
+
+document.addEventListener('keydown', event => {
+  if (event.code === 'Space') play();
+  if (event.key === 'Escape') lose();
+  if (event.key === 'ArrowLeft') move(-1);
+  if (event.key === 'ArrowRight') move(1);
+  if (event.key === 'ArrowUp') rotateCurrent();
+  if (event.key === 'ArrowDown') drop();
+  if (['Space', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.code) || event.key === 'Escape') event.preventDefault();
+});
+
+function frame(time = 0) {
+  if (playing && time - lastDrop > dropDelay) {
+    drop();
+    lastDrop = time;
+  }
+  requestAnimationFrame(frame);
+}
+
+reset();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
