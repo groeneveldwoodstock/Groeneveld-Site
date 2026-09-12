@@ -1,4 +1,4 @@
-<!DOCTYPE html><html><head><title>Speedlunker (copy)</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui=1"><meta charset="UTF-8"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="description" content=""><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon64.png"><link rel="apple-touch-icon" sizes="180x180" href="icon180.png"><link rel="icon" type="image/png" sizes="32x32" href="icon32.png"><link rel="icon" type="image/png" sizes="16x16" href="icon16.png"><style>html,body {
+<!DOCTYPE html><html><head><title>Speedlunker</title><meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui=1"><meta charset="UTF-8"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="description" content=""><link rel="manifest" href="manifest.json"><link rel="icon" type="image/png" href="icon64.png"><link rel="apple-touch-icon" sizes="180x180" href="icon180.png"><link rel="icon" type="image/png" sizes="32x32" href="icon32.png"><link rel="icon" type="image/png" sizes="16x16" href="icon16.png"><style>html,body {
   margin: 0;
   padding: 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -31,6 +31,11 @@ a:hover {
 #canvaswrapper {
   text-align: center ;
 }
+#canvaswrapper canvas {
+  width: min(80vw, 800px) !important;
+  height: auto !important;
+  margin-top: 0 !important;
+}
 </style><style>@font-face { font-family: "BitCell" ; src: url("fonts/BitCell.ttf") format("truetype"); }</style><script>window.fonts = ["BitCell"]</script></head><body class="noselect custom-cursor" oncontextmenu="return false;"><div id="canvaswrapper"></div><script type="text/javascript">var resources = {"images":[{"file":"blade.png","version":1,"size":507,"properties":{}},{"file":"blade2.png","version":1,"size":524,"properties":{}},{"file":"hero.png","version":1,"size":3450,"properties":{}},{"file":"icon.png","version":18,"size":198,"properties":{"frames":1,"fps":5}},{"file":"icon2.png","version":2,"size":700,"properties":{"frames":1,"fps":5}},{"file":"wall.png","version":1,"size":497,"properties":{}}],"assets":[],"maps":{},"sounds":[],"music":[{"file":"bensoundgoinghigher.mp3","version":1,"size":3423450,"properties":{}}]};
 var graphics = "M1";
 
@@ -61,6 +66,10 @@ window.ms_use_server = false ;
 //
 
 window.addEventListener("load",function() {
+  var favicon = document.createElement("link") ;
+  favicon.rel = "icon" ;
+  favicon.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23667eea'/><text x='50' y='70' font-size='70' font-weight='bold' fill='white' text-anchor='middle' font-family='Arial, sans-serif'>G</text></svg>" ;
+  document.head.appendChild(favicon) ;
   var homeLink = document.createElement("a") ;
   homeLink.href = "../index.html" ;
   homeLink.textContent = "← Back to Home" ;
