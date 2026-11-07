@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect Four | Groeneveld Site</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%231a5ca8'/><circle cx='35' cy='38' r='17' fill='%23f4c542'/><circle cx='67' cy='66' r='17' fill='%23ec5b56'/></svg>" type="image/svg+xml">
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+      background: #e8f0f3;
+      color: #172b3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 28px 16px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: radial-gradient(ellipse at 50% 0%, #fff 0%, #e8f0f3 60%, #d9e5e9 100%);
+      text-align: center;
+    }
+
+    .back-link, button {
+      border: 0;
+      border-radius: 6px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .back-link {
+      align-self: flex-start;
+      margin: 0 auto 8px;
+      padding: 10px 14px;
+      color: #172b3a;
+      background: #fff;
+      border: 1px solid #c7d4da;
+      text-decoration: none;
+    }
+
+    h1 {
+      margin: 14px 0 6px;
+      color: #174e82;
+      font-size: 2.2rem;
+    }
+
+    .tagline { margin: 0 0 22px; color: #526977; }
+
+    .setup, .game {
+      width: min(100%, 620px);
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid #c8d7dc;
+      border-radius: 10px;
+      box-shadow: 0 12px 30px rgba(27, 55, 70, 0.12);
+    }
+
+    .setup h2 { margin: 0 0 18px; font-size: 1.25rem; }
+
+    .mode-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .mode-option { position: relative; }
+    .mode-option input { position: absolute; opacity: 0; }
+
+    .mode-option label {
+      display: block;
+      padding: 13px 10px;
+      border: 2px solid #c8d7dc;
+      border-radius: 6px;
+      color: #294453;
+      background: #f7fafb;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .mode-option input:checked + label {
+      border-color: #1a5ca8;
+      background: #e7f2fc;
+      color: #174e82;
+    }
+
+    .mode-option input:focus-visible + label,
+    button:focus-visible, .back-link:focus-visible, .column-button:focus-visible {
+      outline: 3px solid #e6a923;
+      outline-offset: 3px;
+    }
+
+    .name-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      text-align: left;
+    }
+
+    .name-field { display: grid; gap: 6px; color: #425c69; font-size: 0.9rem; font-weight: 700; }
+
+    .name-field input {
+      width: 100%;
+      min-width: 0;
+      padding: 11px 12px;
+      border: 1px solid #b9cbd2;
+      border-radius: 5px;
+      color: #172b3a;
+      background: #fff;
+      font: inherit;
+    }
+
+    .primary-button {
+      margin-top: 20px;
+      padding: 12px 22px;
+      color: #fff;
+      background: #174e82;
+    }
+
+    button:hover { filter: brightness(1.08); }
+
+    .game[hidden], .setup[hidden], [hidden] { display: none !important; }
+
+    .game { padding: 18px 16px 20px; }
+
+    .scoreline {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .player-mark { display: inline-flex; align-items: center; gap: 7px; }
+    .disc { width: 16px; height: 16px; border-radius: 50%; display: inline-block; }
+    .disc.red { background: #e8544f; }
+    .disc.yellow { background: #f2bf35; }
+
+    #status { min-height: 1.5em; margin: 0 0 12px; color: #294453; font-weight: 700; }
+
+    .column-controls {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      width: min(100%, 560px);
+      margin: 0 auto 8px;
+    }
+
+    .column-button { padding: 8px 2px; color: #174e82; background: #e7f2fc; }
+    .column-button:disabled { cursor: not-allowed; opacity: 0.45; }
+
+    canvas {
+      display: block;
+      width: min(100%, 560px);
+      height: auto;
+      margin: 0 auto;
+      border-radius: 8px;
+      touch-action: manipulation;
+    }
+
+    .board-wrap {
+      position: relative;
+      width: min(100%, 560px);
+      margin: 0 auto;
+    }
+
+    .board-wrap canvas { width: 100%; }
+
+    .end-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-content: center;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 8px;
+      background: rgba(15, 39, 57, 0.82);
+      color: #fff;
+      animation: result-appear 220ms ease-out;
+    }
+
+    .end-overlay[hidden] { display: none; }
+    .end-overlay p { margin: 0; font-size: clamp(1.8rem, 7vw, 3.25rem); font-weight: 800; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+    .end-overlay button { justify-self: center; padding: 12px 20px; color: #172b3a; background: #fff; }
+
+    @keyframes result-appear {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .game-actions { margin-top: 14px; }
+    .secondary-button { padding: 10px 16px; color: #174e82; background: #e7f2fc; }
+
+    @media (max-width: 480px) {
+      body { padding: 18px 12px 28px; }
+      h1 { font-size: 1.8rem; }
+      .setup, .game { padding: 17px 12px; }
+      .name-fields { grid-template-columns: 1fr; }
+      .column-controls { gap: 3px; }
+      .column-button { padding: 8px 0; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="index.html">&larr; Back to Home</a>
+  <h1>Connect Four</h1>
+  <p class="tagline">Line up four discs to win.</p>
+
+  <section class="setup" id="setup" aria-labelledby="setup-title">
+    <h2 id="setup-title">Set up your game</h2>
+    <div class="mode-options" role="radiogroup" aria-label="Number of players">
+      <div class="mode-option">
+        <input type="radio" name="mode" id="one-player" value="one" checked>
+        <label for="one-player">One player</label>
+      </div>
+      <div class="mode-option">
+        <input type="radio" name="mode" id="two-player" value="two">
+        <label for="two-player">Two players</label>
+      </div>
+    </div>
+    <div class="name-fields">
+      <label class="name-field" for="player-one-name">
+        Red player
+        <input id="player-one-name" maxlength="20" autocomplete="name" placeholder="Player 1">
+      </label>
+      <label class="name-field" id="player-two-field" for="player-two-name" hidden>
+        Yellow player
+        <input id="player-two-name" maxlength="20" placeholder="Player 2">
+      </label>
+    </div>
+    <button class="primary-button" id="start-button" type="button">Start game</button>
+  </section>
+
+  <section class="game" id="game" aria-label="Connect Four game" hidden>
+    <div class="scoreline" id="scoreline"></div>
+    <p id="status" role="status" aria-live="polite"></p>
+    <div class="column-controls" id="column-controls" aria-label="Choose a column"></div>
+    <div class="board-wrap">
+      <canvas id="board" width="560" height="480" role="img" aria-label="Connect Four board"></canvas>
+      <div class="end-overlay" id="end-overlay" role="alert" hidden>
+        <p id="end-message"></p>
+        <button id="play-again-button" type="button">Play again</button>
+      </div>
+    </div>
+    <div class="game-actions">
+      <button class="secondary-button" id="restart-button" type="button">New game</button>
+    </div>
+  </section>
+
+  <script>
+    const rowCount = 6;
+    const columnCount = 7;
+    const canvas = document.getElementById('board');
+    const context = canvas.getContext('2d');
+    const setup = document.getElementById('setup');
+    const game = document.getElementById('game');
+    const status = document.getElementById('status');
+    const endOverlay = document.getElementById('end-overlay');
+    const endMessage = document.getElementById('end-message');
+    const columnControls = document.getElementById('column-controls');
+    const playerTwoField = document.getElementById('player-two-field');
+    const playerTwoName = document.getElementById('player-two-name');
+    const playerOneName = document.getElementById('player-one-name');
+    const colors = ['#e8544f', '#f2bf35'];
+    let board = createBoard();
+    let players = [];
+    let currentPlayer = 0;
+    let gameOver = false;
+    let computerTurnTimer;
+
+    function createBoard() {
+      return Array.from({ length: rowCount }, () => Array(columnCount).fill(null));
+    }
+
+    function selectedMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const twoPlayers = selectedMode() === 'two';
+        playerTwoField.hidden = !twoPlayers;
+        playerTwoName.disabled = !twoPlayers;
+      });
+    });
+
+    function drawBoard() {
+      const cellSize = canvas.width / columnCount;
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#1a5ca8';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let row = 0; row < rowCount; row++) {
+        for (let column = 0; column < columnCount; column++) {
+          const centerX = column * cellSize + cellSize / 2;
+          const centerY = row * cellSize + cellSize / 2;
+          context.beginPath();
+          context.arc(centerX, centerY, cellSize * 0.38, 0, Math.PI * 2);
+          context.fillStyle = board[row][column] === null ? '#e8f0f3' : colors[board[row][column]];
+          context.fill();
+          if (board[row][column] !== null) {
+            context.beginPath();
+            context.arc(centerX - cellSize * 0.1, centerY - cellSize * 0.12, cellSize * 0.11, 0, Math.PI * 2);
+            context.fillStyle = 'rgba(255,255,255,0.32)';
+            context.fill();
+          }
+        }
+      }
+    }
+
+    function renderColumnButtons() {
+      columnControls.replaceChildren();
+      for (let column = 0; column < columnCount; column++) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'column-button';
+        button.textContent = String(column + 1);
+        button.setAttribute('aria-label', `Drop a disc in column ${column + 1}`);
+        button.disabled = gameOver || board[0][column] !== null || (players[currentPlayer] && players[currentPlayer].computer);
+        button.addEventListener('click', () => playColumn(column));
+        columnControls.append(button);
+      }
+    }
+
+    function updateStatus(message) {
+      status.textContent = message || `${players[currentPlayer].name}'s turn`;
+      renderColumnButtons();
+    }
+
+    function startGame() {
+      clearTimeout(computerTurnTimer);
+      const mode = selectedMode();
+      players = [
+        { name: playerOneName.value.trim() || 'Player 1', computer: false },
+        { name: mode === 'one' ? 'Computer' : (playerTwoName.value.trim() || 'Player 2'), computer: mode === 'one' }
+      ];
+      document.getElementById('scoreline').innerHTML = players.map((player, index) =>
+        `<span class="player-mark"><span class="disc ${index === 0 ? 'red' : 'yellow'}" aria-hidden="true"></span>${escapeHtml(player.name)}</span>`
+      ).join('<span aria-hidden="true">vs</span>');
+      board = createBoard();
+      currentPlayer = 0;
+      gameOver = false;
+      endOverlay.hidden = true;
+      setup.hidden = true;
+      game.hidden = false;
+      drawBoard();
+      updateStatus();
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+    }
+
+    function dropDisc(targetBoard, column, player) {
+      for (let row = rowCount - 1; row >= 0; row--) {
+        if (targetBoard[row][column] === null) {
+          targetBoard[row][column] = player;
+          return row;
+        }
+      }
+      return -1;
+    }
+
+    function hasWon(targetBoard, row, column, player) {
+      const directions = [[0, 1], [1, 0], [1, 1], [1, -1]];
+      return directions.some(([rowStep, columnStep]) => {
+        let connected = 1;
+        for (const sign of [-1, 1]) {
+          let nextRow = row + rowStep * sign;
+          let nextColumn = column + columnStep * sign;
+          while (nextRow >= 0 && nextRow < rowCount && nextColumn >= 0 && nextColumn < columnCount && targetBoard[nextRow][nextColumn] === player) {
+            connected++;
+            nextRow += rowStep * sign;
+            nextColumn += columnStep * sign;
+          }
+        }
+        return connected >= 4;
+      });
+    }
+
+    function playColumn(column) {
+      if (gameOver || players[currentPlayer].computer || board[0][column] !== null) return;
+      makeMove(column);
+    }
+
+    function makeMove(column) {
+      const row = dropDisc(board, column, currentPlayer);
+      if (row === -1) return;
+      drawBoard();
+
+      if (hasWon(board, row, column, currentPlayer)) {
+        gameOver = true;
+        const result = `${players[currentPlayer].name} wins!`;
+        updateStatus(result);
+        showEndOverlay(result);
+        return;
+      }
+      if (board.every((boardRow) => boardRow.every((cell) => cell !== null))) {
+        gameOver = true;
+        const result = "It's a draw!";
+        updateStatus(result);
+        showEndOverlay(result);
+        return;
+      }
+
+      currentPlayer = 1 - currentPlayer;
+      updateStatus(players[currentPlayer].computer ? 'Computer is thinking…' : undefined);
+      if (players[currentPlayer].computer) {
+        computerTurnTimer = setTimeout(computerMove, 450);
+      }
+    }
+
+    function showEndOverlay(message) {
+      endMessage.textContent = message;
+      endOverlay.hidden = false;
+    }
+
+    function computerMove() {
+      const availableColumns = Array.from({ length: columnCount }, (_, column) => column).filter((column) => board[0][column] === null);
+      const winningColumn = findTacticalMove(currentPlayer, availableColumns);
+      const blockingColumn = findTacticalMove(1 - currentPlayer, availableColumns);
+      const preferredColumns = [3, 2, 4, 1, 5, 0, 6].filter((column) => availableColumns.includes(column));
+      const column = winningColumn ?? blockingColumn ?? preferredColumns[Math.floor(Math.random() * Math.min(3, preferredColumns.length))];
+      makeMove(column);
+    }
+
+    function findTacticalMove(player, availableColumns) {
+      return availableColumns.find((column) => {
+        const simulatedBoard = board.map((row) => row.slice());
+        const row = dropDisc(simulatedBoard, column, player);
+        return hasWon(simulatedBoard, row, column, player);
+      });
+    }
+
+    canvas.addEventListener('click', (event) => {
+      if (gameOver || players[currentPlayer]?.computer) return;
+      const bounds = canvas.getBoundingClientRect();
+      const column = Math.floor(((event.clientX - bounds.left) / bounds.width) * columnCount);
+      if (column >= 0 && column < columnCount) playColumn(column);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!game.hidden && ['1', '2', '3', '4', '5', '6', '7'].includes(event.key)) {
+        playColumn(Number(event.key) - 1);
+      }
+    });
+
+    document.getElementById('start-button').addEventListener('click', startGame);
+    document.getElementById('restart-button').addEventListener('click', startGame);
+    document.getElementById('play-again-button').addEventListener('click', startGame);
+    playerTwoName.disabled = true;
+    drawBoard();
+  </script>
+</body>
+</html>
